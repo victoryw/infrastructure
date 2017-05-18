@@ -7,8 +7,8 @@ VAGRANTFILE_API_VERSION = "2"
 # cluster configure
 cluster = {
   "master-1" => { :ip => "10.245.6.2", :cpus => 2, :memory => 4096 },
-  "slave-1"  => { :ip => "10.245.6.3", :cpus => 1, :memory => 2048 },
-  "slave-2"  => { :ip => "10.245.6.4", :cpus => 1, :memory => 2048 },
+  # "slave-1"  => { :ip => "10.245.6.3", :cpus => 1, :memory => 2048 },
+  # "slave-2"  => { :ip => "10.245.6.4", :cpus => 1, :memory => 2048 },
 }
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -64,13 +64,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       cfg.vm.network :private_network, ip: "#{info[:ip]}", nictype: "virtio"
 
       # provision
-      if index == cluster.size - 1
-        cfg.vm.provision "ansible" do |ansible|
-          ansible.limit          = "all"
-          ansible.playbook       = "provision/development.yml"
-          ansible.inventory_path = "provision/development"
-        end
-      end
+      # if index == cluster.size - 1
+      #   cfg.vm.provision "ansible" do |ansible|
+      #     ansible.limit          = "all"
+      #     ansible.playbook       = "provision/development.yml"
+      #     ansible.inventory_path = "provision/development"
+      #   end
+      # end
+      cfg.vm.provision "file", source: "#{ENV['HOME']}/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
     end
   end
 end
